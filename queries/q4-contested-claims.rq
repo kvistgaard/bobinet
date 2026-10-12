@@ -1,0 +1,10 @@
+# Claims the text itself marks as contested or secondhand (confidence < 0.7)
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX kgx:  <https://personalknowledgegraphs.com/def/bobinet#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?claim ?confidence ?evidence
+WHERE {
+  ?claim a kgx:Claim ; kgx:confidence ?confidence ; prov:value ?evidence .
+  FILTER(?confidence < 0.7)
+}
+ORDER BY ?confidence

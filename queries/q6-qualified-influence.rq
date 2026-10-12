@@ -1,0 +1,11 @@
+# Qualified influences: who, by whom, and the channel description (PROV-O)
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov:    <http://www.w3.org/ns/prov#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT ?influencee ?influencer ?channel
+WHERE {
+  ?p prov:qualifiedInfluence ?inf .
+  ?inf prov:influencer ?q ; dcterms:description ?channel .
+  ?p rdfs:label ?influencee . ?q rdfs:label ?influencer .
+}
+ORDER BY ?influencee

@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bobinet"
+version = "0.2.0"
+description = "Build an RDF knowledge graph from a text document: one named graph per claim, with the verbatim sentence behind every triple."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "bobinet contributors" }]
+keywords = ["rdf", "knowledge-graph", "sparql", "trig", "named-graphs", "provenance", "shacl", "entity-linking", "wikidata", "dbpedia", "llm"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "rdflib>=7.0",
+    "pyshacl>=0.26",
+]
+
+[project.urls]
+Homepage = "https://github.com/kvistgaard/bobinet"
+Issues = "https://github.com/kvistgaard/bobinet/issues"
+
+# No console script: bobinet reads profile.ttl, shapes.ttl and queries/*.rq
+# from beside bobinet.py, so run it from a clone.
+[tool.setuptools]
+py-modules = ["bobinet", "prompts"]

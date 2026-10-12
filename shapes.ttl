@@ -1,0 +1,75 @@
+# SHACL shapes for graphs produced by bobinet.
+# Validated with pyshacl against the merged (union) graph.
+
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema:  <https://schema.org/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix cito:    <http://purl.org/spar/cito/> .
+@prefix dbo:     <http://dbpedia.org/ontology/> .
+@prefix kgx:     <https://personalknowledgegraphs.com/def/bobinet#> .
+@prefix :        <https://personalknowledgegraphs.com/def/bobinet-shapes#> .
+
+## Every entity has a label
+:PersonShape a sh:NodeShape ;
+    sh:targetClass schema:Person ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ] ;
+    sh:property [ sh:path schema:birthDate ; sh:maxCount 1 ; sh:datatype xsd:gYear ] ;
+    sh:property [ sh:path schema:deathDate ; sh:maxCount 1 ; sh:datatype xsd:gYear ] .
+
+:OrgShape a sh:NodeShape ;
+    sh:targetClass schema:Organization ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ] .
+
+:WorkShape a sh:NodeShape ;
+    sh:targetClass schema:CreativeWork ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ] .
+
+:ConceptShape a sh:NodeShape ;
+    sh:targetClass skos:Concept ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ] .
+
+## Domain/range of the influence predicates
+:InfluencedByShape a sh:NodeShape ;
+    sh:targetSubjectsOf dbo:influencedBy ;
+    sh:class schema:Person ;
+    sh:property [ sh:path dbo:influencedBy ; sh:class schema:Person ] .
+
+:AdvisorShape a sh:NodeShape ;
+    sh:targetSubjectsOf dbo:academicAdvisor ;
+    sh:class schema:Person ;
+    sh:property [ sh:path dbo:academicAdvisor ; sh:class schema:Person ] .
+
+## Citation predicates connect works to works
+:CitesShape a sh:NodeShape ;
+    sh:targetSubjectsOf cito:cites, cito:citesAsEvidence, cito:critiques,
+                        cito:disputes, cito:agreesWith, cito:extends ;
+    sh:class schema:CreativeWork .
+
+:CitesObjectShape a sh:NodeShape ;
+    sh:targetObjectsOf cito:cites, cito:citesAsEvidence, cito:critiques,
+                       cito:disputes, cito:agreesWith, cito:extends ;
+    sh:class schema:CreativeWork .
+
+## SKOS relations connect concepts
+:SkosRelatedShape a sh:NodeShape ;
+    sh:targetSubjectsOf skos:related, skos:broader ;
+    sh:class skos:Concept .
+
+## Every claim carries evidence, source and confidence
+:ClaimShape a sh:NodeShape ;
+    sh:targetClass kgx:Claim ;
+    sh:property [ sh:path prov:value ; sh:minCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path prov:wasQuotedFrom ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path kgx:confidence ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:datatype xsd:decimal ;
+                  sh:minInclusive 0.0 ; sh:maxInclusive 1.0 ] ;
+    sh:property [ sh:path kgx:evidenceVerified ; sh:minCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path prov:wasGeneratedBy ; sh:minCount 1 ; sh:nodeKind sh:IRI ] .
+
+## Qualified influences point at a person and carry a description
+:InfluenceNodeShape a sh:NodeShape ;
+    sh:targetClass prov:Influence ;
+    sh:property [ sh:path prov:influencer ; sh:minCount 1 ; sh:nodeKind sh:IRI ] .

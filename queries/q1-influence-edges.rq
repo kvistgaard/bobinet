@@ -1,0 +1,13 @@
+# Influence edges, with the evidence quote and confidence behind each
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo:  <http://dbpedia.org/ontology/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX kgx:  <https://personalknowledgegraphs.com/def/bobinet#>
+SELECT ?influenced ?influencer ?confidence ?evidence
+WHERE {
+  GRAPH ?claim { ?a dbo:influencedBy ?b }
+  ?a rdfs:label ?influenced .
+  ?b rdfs:label ?influencer .
+  ?claim kgx:confidence ?confidence ; prov:value ?evidence .
+}
+ORDER BY ?influenced DESC(?confidence)

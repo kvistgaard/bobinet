@@ -1,0 +1,33 @@
+# ── Author's decision log ────────────────────────────────────────────────────
+# Kept private, matching this author's other projects (libcat, nodica). Still
+# exists locally and is registered in _Decisions/registry.json; not published.
+decision-log.md
+# Research log: findings from papers/tools examined for improvements.
+research.md
+# Comparison with other text-to-RDF tools, and the improvement plan it led to.
+text-to-rdf-tools.md
+improvement-plan.md
+generic-core-evaluation.md
+
+# ── Generated ────────────────────────────────────────────────────────────────
+# Cached ontology term lists; `validate` re-fetches whatever is missing.
+vocab-cache/
+# Default --out directory
+out/
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# ── Editors / OS ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

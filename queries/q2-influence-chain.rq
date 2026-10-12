@@ -1,0 +1,10 @@
+# Two-hop influence chains: A influenced B, B influenced C
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo:  <http://dbpedia.org/ontology/>
+SELECT ?a ?b ?c
+WHERE {
+  ?cN dbo:influencedBy ?bN .
+  ?bN dbo:influencedBy ?aN .
+  ?aN rdfs:label ?a . ?bN rdfs:label ?b . ?cN rdfs:label ?c .
+}
+ORDER BY ?c ?a

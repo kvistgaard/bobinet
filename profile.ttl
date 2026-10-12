@@ -1,0 +1,101 @@
+# Application profile for bobinet.
+# Every class and property below is reused from a published ontology, except
+# the three kgx: terms declared at the bottom. A term qualifies for the
+# profile only if its defining ontology still dereferences (checked by
+# `bobinet.py validate`, which checks the kgx: terms against this file).
+
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema:  <https://schema.org/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix cito:    <http://purl.org/spar/cito/> .
+@prefix fabio:   <http://purl.org/spar/fabio/> .
+@prefix dbo:     <http://dbpedia.org/ontology/> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix kgx:     <https://personalknowledgegraphs.com/def/bobinet#> .
+
+<https://personalknowledgegraphs.com/def/bobinet>
+    a owl:Ontology ;
+    dcterms:title "bobinet application profile"@en ;
+    rdfs:label "bobinet application profile"@en ;
+    dcterms:description "Closed vocabulary used by the bobinet extraction pipeline: 6 entity classes and 19 object properties reused from schema.org, FOAF, SKOS, DCMI Terms, PROV-O, CiTO, FaBiO and the DBpedia ontology, plus the 3 kgx: terms declared here."@en ;
+    rdfs:comment "Closed vocabulary used by the bobinet extraction pipeline: 6 entity classes and 19 object properties reused from schema.org, FOAF, SKOS, DCMI Terms, PROV-O, CiTO, FaBiO and the DBpedia ontology, plus the 3 kgx: terms declared here."@en ;
+    dcterms:creator <https://velitchkov.eu/#me> ;
+    dcterms:contributor <http://www.wikidata.org/entity/Q118876059> ;
+    dcterms:created "2026-08-18"^^xsd:date ;
+    dcterms:modified "2026-08-28"^^xsd:date ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    vann:preferredNamespacePrefix "kgx" ;
+    vann:preferredNamespaceUri "https://personalknowledgegraphs.com/def/bobinet#" ;
+    vann:usageNote "The profile is closed on purpose: an extractor may only emit the classes and properties listed here, so a run cannot invent vocabulary. Only the kgx: terms are minted; everything else is reused from a published ontology that still dereferences."@en ;
+    owl:versionInfo "1.0.0" .
+
+## Classes (extraction type -> RDF classes)
+# PERSON        -> schema:Person, foaf:Person
+# ORGANIZATION  -> schema:Organization, foaf:Organization
+# WORK          -> schema:CreativeWork (+ fabio:Book / fabio:JournalArticle /
+#                  fabio:WorkingPaper / fabio:AudioDocument by work type)
+# CONCEPT       -> skos:Concept
+# EVENT         -> schema:Event
+# PLACE         -> schema:Place
+# Under --iri-policy dbpedia, dbo:Person, dbo:Organisation, dbo:Work,
+# dbo:Event and dbo:Place are added alongside.
+
+## Object properties (closed predicate set for extraction)
+# dbo:influencedBy        PERSON -> PERSON   genuine intellectual influence
+#   (mirrored as prov:wasInfluencedBy; nuance via prov:qualifiedInfluence)
+# dbo:academicAdvisor     PERSON -> PERSON   formal teaching/supervision
+# dbo:knownFor            PERSON -> CONCEPT|WORK
+# schema:memberOf         PERSON -> ORGANIZATION
+# schema:affiliation      PERSON -> ORGANIZATION
+# schema:founder          ORGANIZATION -> PERSON
+# schema:author           WORK -> PERSON
+# schema:editor           WORK -> PERSON
+# schema:publisher        WORK -> ORGANIZATION
+# schema:about            WORK -> CONCEPT|PERSON
+# schema:attendee         EVENT -> PERSON
+# cito:cites              WORK -> WORK  (plus typed variants:)
+# cito:citesAsEvidence, cito:critiques, cito:disputes,
+# cito:agreesWith, cito:extends
+# skos:related            CONCEPT -> CONCEPT
+# skos:broader            CONCEPT -> CONCEPT (narrower -> broader)
+# Under --iri-policy dbpedia, author, editor, publisher and founder take
+# their dbo: equivalents, and affiliation becomes dbo:employer.
+
+## Datatype properties
+# rdfs:label, skos:altLabel, schema:description, schema:birthDate,
+# schema:deathDate, schema:datePublished
+
+## Provenance pattern (named graph per claim, TriG)
+# Each extracted relation is asserted inside its own named graph,
+# <BASE/claim/cNNN>, where BASE is the run's --base. In the provenance graph
+# the claim graph IRI is described with:
+#   a kgx:Claim ;
+#   prov:value "verbatim evidence quote" ;
+#   prov:wasQuotedFrom <document section> ;
+#   kgx:confidence "0.9"^^xsd:decimal ;
+#   kgx:evidenceVerified true/false ;
+#   prov:wasGeneratedBy <extraction activity> .
+
+## Local vocabulary (the only terms not reused)
+kgx:Claim a rdfs:Class ;
+    rdfs:label "Claim"@en ;
+    rdfs:isDefinedBy <https://personalknowledgegraphs.com/def/bobinet> ;
+    rdfs:comment "A named graph holding one extracted relation instance. Typed here because no widely reused ontology offers a claim-graph class; PROV-O terms carry the actual provenance."@en .
+
+kgx:confidence a owl:AnnotationProperty ;
+    rdfs:label "confidence"@en ;
+    rdfs:isDefinedBy <https://personalknowledgegraphs.com/def/bobinet> ;
+    rdfs:comment "Extractor's confidence (0..1) that the source text asserts the relation. No widely reused vocabulary defines a per-statement confidence property; Wikidata and major KG pipelines likewise mint their own."@en ;
+    rdfs:range xsd:decimal .
+
+kgx:evidenceVerified a owl:AnnotationProperty ;
+    rdfs:label "evidence verified"@en ;
+    rdfs:isDefinedBy <https://personalknowledgegraphs.com/def/bobinet> ;
+    rdfs:comment "True when the evidence quote was mechanically confirmed as a verbatim substring of the source section (after whitespace and punctuation normalisation)."@en ;
+    rdfs:range xsd:boolean .
