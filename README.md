@@ -12,7 +12,7 @@ Bobinet follows the four stages of Anthropic's [knowledge-graph
 cookbook](https://platform.claude.com/cookbook/capabilities-knowledge-graph-guide):
 extract, resolve, assemble and query.
 
-The name comes from bobbinet, a machine-made net.
+The name comes from [bobbinet](https://en.wikipedia.org/wiki/Bobbinet), a machine-made net.
 
 ## Requirements
 
@@ -142,8 +142,7 @@ python bobinet.py --out out zoom --chunks s05,s08
 
 Without `--chunks`, `zoom` takes every section that an influence claim
 quotes. It writes `<name>-zoom.trig` and `<name>-zoom.ttl` and leaves the
-other files alone. [Nodica](https://github.com/kvistgaard/nodica) displays
-them with click and wheel zoom.
+other files alone. [Nodica](https://github.com/kvistgaard/nodica) displays them with click and wheel zoom.
 
 ## Roadmap
 
